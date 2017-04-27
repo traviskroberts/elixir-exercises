@@ -27,13 +27,19 @@ defmodule MyEnum do
   end
 
   # not quite working yet…
-  def split([ head | tail ], count) when count == 0, do: { head, tail }
-  def split([ head | tail ], count) do
-    [ head | split(tail, count - 1) ]
+  def split(list, count) when is_list(list) do
+    _split(list, count, [])
   end
+  defp _split([ head | tail ], count, acc) do
+    case length(acc) == count do
+      true -> { Enum.reverse([ head | acc ]), tail }
+      false -> _split(tail, count - 1, [ head | acc ])
+    end
+  end
+  defp _split([], _count, acc), do: { Enum.reverse(acc), [] }
 
   def take([ head | [] ], count) when count >= 1, do: [ head | [] ]
   def take([ _head | [] ], count) when count < 1, do: []
   def take([ _head | _tail ], count) when count == 0, do: []
-  def take([ head | tail ], count) do: [ head | take(tail, count - 1) ]
+  def take([ head | tail ], count), do: [ head | take(tail, count - 1) ]
 end
